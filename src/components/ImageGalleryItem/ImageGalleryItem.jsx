@@ -1,43 +1,37 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Modal } from '../Modal/Modal';
 import PropTypes from 'prop-types';
 import css from './ImageGalleryItem.module.css';
 
-export class ImageGalleryItem extends Component {
-  state = {
-    showModal: false,
+export const ImageGalleryItem = ({ image }) => {
+  const [showModal, setShowModal] = useState(false);
+
+  const toggleModal = () => {
+    setShowModal(prevModal => !prevModal);
   };
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
-  };
+  const { webformatURL, largeImageURL, tags } = image;
 
-  render() {
-    const { image } = this.props;
-
-    return (
-      <>
-        <li className={css.galleryItem}>
-          <img
-            src={image.webformatURL}
-            alt={image.tags}
-            className={css.ImageGalleryItemImage}
-            onClick={this.toggleModal}
+  return (
+    <>
+      <li className={css.galleryItem}>
+        <img
+          src={webformatURL}
+          alt={tags}
+          className={css.ImageGalleryItemImage}
+          onClick={toggleModal}
+        />
+        {showModal && (
+          <Modal
+            largeImageURL={largeImageURL}
+            alt={tags}
+            onClose={toggleModal}
           />
-          {this.state.showModal && (
-            <Modal
-              largeImageURL={image.largeImageURL}
-              alt={image.tags}
-              onClose={this.toggleModal}
-            />
-          )}
-        </li>
-      </>
-    );
-  }
-}
+        )}
+      </li>
+    </>
+  );
+};
 
 ImageGalleryItem.propTypes = {
   image: PropTypes.shape({
